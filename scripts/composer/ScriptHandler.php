@@ -73,7 +73,7 @@ class ScriptHandler {
           'database' => 'drupal',
           'username' => 'drupal',
           'password' => 'drupal',
-          'host' => 'localhost',
+          'host' => 'db',
           'prefix' => '',
         ],
         'required' => TRUE,
