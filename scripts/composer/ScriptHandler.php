@@ -67,13 +67,16 @@ class ScriptHandler {
         'required' => TRUE,
       ];
       // Add default database settings.
-      $settings['databases']['default']['default'] = [
-        'driver' => (object) ['value' => 'mysql', 'required' => TRUE,],
-        'database' => (object) ['value' => 'drupal', 'required' => TRUE,],
-        'username' => (object) ['value' => 'drupal', 'required' => TRUE,],
-        'password' => (object) ['value' => 'drupal', 'required' => TRUE,],
-        'host' => (object) ['value' => 'localhost', 'required' => TRUE,],
-        'prefix' => (object) ['value' => '', 'required' => TRUE,],
+      $settings['databases']['default']['default'] = (object) [
+        'value' => [
+          'driver' => 'mysql',
+          'database' => 'drupal',
+          'username' => 'drupal',
+          'password' => 'drupal',
+          'host' => 'localhost',
+          'prefix' => '',
+        ],
+        'required' => TRUE,
       ];
       drupal_rewrite_settings($settings, $drupalRoot . '/sites/default/settings.php');
       $fs->chmod($drupalRoot . '/sites/default/settings.php', 0666);
