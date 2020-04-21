@@ -36,15 +36,44 @@ class ScriptHandler {
       }
     }
 
+    // Prepare the local settings file for installation
+    if (!$fs->exists($drupalRoot . '/sites/default/settings.local.php') && $fs->exists($drupalRoot . '/sites/example.settings.local.php')) {
+      $fs->copy($drupalRoot . '/sites/example.settings.local.php', $drupalRoot . '/sites/default/settings.local.php');
+      require_once $drupalRoot . '/core/includes/bootstrap.inc';
+      require_once $drupalRoot . '/core/includes/install.inc';
+      // Disable caching.
+      new Settings([]);
+      $settings['settings']['cache'] = [
+        'bins' => [
+          'render' => (object) ['value' => 'cache.backend.null', 'required' => TRUE,],
+          'page' => (object) ['value' => 'cache.backend.null', 'required' => TRUE,],
+          'dynamic_page_cache' => (object) ['value' => 'cache.backend.null', 'required' => TRUE,],
+        ],
+      ];
+      drupal_rewrite_settings($settings, $drupalRoot . '/sites/default/settings.local.php');
+      $fs->chmod($drupalRoot . '/sites/default/settings.local.php', 0666);
+      $event->getIO()->write("Created a sites/default/settings.local.php file with chmod 0666");
+    }
+
     // Prepare the settings file for installation
     if (!$fs->exists($drupalRoot . '/sites/default/settings.php') && $fs->exists($drupalRoot . '/sites/default/default.settings.php')) {
       $fs->copy($drupalRoot . '/sites/default/default.settings.php', $drupalRoot . '/sites/default/settings.php');
       require_once $drupalRoot . '/core/includes/bootstrap.inc';
       require_once $drupalRoot . '/core/includes/install.inc';
       new Settings([]);
+      $settings['settings'] = [];
       $settings['settings']['config_sync_directory'] = (object) [
         'value' => Path::makeRelative($drupalFinder->getComposerRoot() . '/config/sync', $drupalRoot),
         'required' => TRUE,
+      ];
+      // Add default database settings.
+      $settings['databases']['default']['default'] = [
+        'driver' => (object) ['value' => 'mysql', 'required' => TRUE,],
+        'database' => (object) ['value' => 'drupal', 'required' => TRUE,],
+        'username' => (object) ['value' => 'drupal', 'required' => TRUE,],
+        'password' => (object) ['value' => 'drupal', 'required' => TRUE,],
+        'host' => (object) ['value' => 'localhost', 'required' => TRUE,],
+        'prefix' => (object) ['value' => '', 'required' => TRUE,],
       ];
       drupal_rewrite_settings($settings, $drupalRoot . '/sites/default/settings.php');
       $fs->chmod($drupalRoot . '/sites/default/settings.php', 0666);
