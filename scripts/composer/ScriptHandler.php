@@ -36,6 +36,11 @@ class ScriptHandler {
       }
     }
 
+    // Prepare the config sync directory.
+    if (!$fs->exists($drupalRoot . '/../config/sync')) {
+      $fs->mkdir($drupalRoot . '/../config/sync', 0777);
+    }
+
     // Prepare the local settings file for installation
     if (!$fs->exists($drupalRoot . '/sites/default/settings.local.php') && $fs->exists($drupalRoot . '/sites/example.settings.local.php')) {
       $fs->copy($drupalRoot . '/sites/example.settings.local.php', $drupalRoot . '/sites/default/settings.local.php');
