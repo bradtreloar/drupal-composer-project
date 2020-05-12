@@ -31,6 +31,9 @@
 # Ignore exported data
 /data/
 
+# Ignore block config
+/config/**/block.block.*.yml
+
 # Ignore PHP error logs
 error_log
 /.editorconfig
