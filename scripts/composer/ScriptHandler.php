@@ -95,6 +95,13 @@ class ScriptHandler {
       umask($oldmask);
       $event->getIO()->write("Created a sites/default/files directory with chmod 0777");
     }
+
+    // Create the phpunit config.
+    if (!$fs->exists($drupalRoot . '/phpunit.xml')) {
+      $fs->copy(
+        $drupalRoot . '/../phpunit.xml.dist',
+        $drupalRoot . '/phpunit.xml');
+    }
   }
 
   /**
